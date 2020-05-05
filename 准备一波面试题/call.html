@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  
+</body>
+<script>
+  // call apply异同点
+  // 相同：改变函数执行时的上下文，将一个对象的方法交给另一个对象执行，并且是立即执行的
+  // 不同：call第二个参数以参数列表的形式展现；apply是以数组或者类数组
+  // 对象的继承
+  function superClass () {
+    this.a = 1;
+    this.print = function () {
+        console.log(this.a);
+    }
+  }
+
+  function subClass () {
+      superClass.call(this);
+      this.print();
+  }
+
+  subClass();
+  // subClass通过call方法，继承了superClass的方法和变量
+
+
+ // 借用方法
+ // 比如常用的类数组转数组
+ var arrayLike = {
+    0: 'qianlong',
+    1: 'ziqi',
+    2: 'qianduan',
+    length: 3
+  }
+  
+  var arr = Array.prototype.slice.call(arrayLike);
+  console.log(arr)
+
+  // 获取数组最大最小的一项
+  let array = [3,6,1,9,0]
+  let max = Math.max.apply(Math, array);
+  console.log(max)
+
+  // 数组合并除了可以使用扩展运算符 还可以
+  let arr1 = [1, 2, 3];
+  let arr2 = [4, 5, 6];
+
+  Array.prototype.push.apply(arr1, arr2);
+  console.log(arr1);
+  // 判断对象类型
+  function isArray(obj){
+    return Object.prototype.toString.call(obj) == '[object Array]';
+  }
+
+  // 猫吃鱼，狗吃肉，奥特曼打小怪兽。
+  // 有天狗想吃鱼了
+  // 猫.吃鱼.call(狗，鱼)
+  // 狗就吃到鱼了
+  // 猫成精了，想打怪兽
+  // 奥特曼.打小怪兽.call(猫，小怪兽)
+  // 猫也可以打小怪兽了
+
+  // bind 返回值是函数，调用之后才会执行
+    if (!Function.prototype.bindMethod) {
+      Function.prototype.bindMethod = function(oThis) {
+        if (typeof this !== 'function') {
+          throw new TypeError('Function.prototype.bind - what is trying to be bound is not callable');
+        }
+        // 参数1表示slice(start,end)截取，将bind函数的参数数组取出来
+        var aArgs = Array.prototype.slice.call(arguments, 1);
+        var fToBind = this; // this执行func
+        var fNOP = function() {};
+        var fBound  = function() {
+          // 判断原始this对象是不是fBound的实例
+          oThis = this instanceof fBound ? this : oThis;
+          console.log(oThis)
+          // 拼接bind进来的参数和bind之后调用的参数
+          aArgs = aArgs.concat(Array.prototype.slice.call(arguments));
+          // 作用域绑定
+          return fToBind.apply(oThis, aArgs);
+        };
+        console.log(this)
+        if (this.prototype) {
+          fNOP.prototype = this.prototype;
+        }
+        fBound.prototype = new fNOP();
+        return fBound;
+      };
+    }
+    
+
+</script>
+</html>

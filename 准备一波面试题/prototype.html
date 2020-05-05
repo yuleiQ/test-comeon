@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  
+</body>
+<script>
+  const obj1 = {};
+  const obj2 = new Object();
+  function func1() {
+
+  }
+  const obj3 = new func1();
+  const func2 = new function() {
+
+  }
+  const func3 = new Function()
+
+  console.log(obj1);  // object
+  console.log(obj2);  // object
+  console.log(obj3);  // object
+  // 以上为普通对象 是Object的实例
+  console.log(func1);  // function
+  console.log(func2);  // function
+  console.log(func3);  // function
+  // 以上为函数对象 是Function的实例
+
+  console.log(typeof Object);  //f unction
+  console.log(typeof Function); // function
+  // 由此可知 只要是Function的实例，就是函数对象
+
+
+
+
+
+  function func() {}
+  console.log(typeof func.prototype); // object
+  console.log(typeof func.__proto__);//function
+
+  const obj = {};
+  console.log(typeof obj.__proto__);// object
+  console.log(typeof obj.prototype); //undefined
+
+  console.log(obj.__proto__ === Object.prototype) // true
+  console.log(func.__proto__ === Function.prototype) // true
+
+  // 只有函数对象有 prototype 属性，普通对象 没有这个属性
+  // 函数对象 和 普通对象 都有 __proto__这个属性。
+  // prototype 和 __proto__都是在创建一个函数或者对象会自动生成的属性。
+
+
+ // 实例的 __proto__属性主动指向构造的 prototype
+
+ console.log(typeof func.prototype); // object  func.prototype是一个对象，那么他就是Object的实例
+ func.prototype.__proto__ = Object.prototype
+
+
+
+
+
+ const Person = function(name,desc){
+      this.name = name;
+      this.desc = desc;
+  } // 创建构造函数Person Person.prototype自动创建，其中包含了 constructor 和 __proto__两个属性;
+  Person.prototype.getName = function(){
+      return this.name;
+  }
+  Person.prototype.getDesc = function(){
+      return this.desc;
+  }
+
+  const obj4 = new Person('juefei','cool');
+  console.log(obj4);
+  console.log(obj4.getName);
+
+  // obj.__proto__ = Person.prototype;
+
+  // 执行第六代码时，实例obj上找不到getName，故根据自身的__proto__向上查找，找到Person.prototype，正巧他身上有个getName
+
+  // 原型链过程
+  // 在访问一个对象（obj）的属性方法时,若在当前的对象上面找不到,则会通过obj.__proto__去寻找,而obj.__proto__又指向构造函数(objCreated)的
+  // prototype,所以它又自动去 objCreated.prototype 的属性/方法上面去找,结果还是没找到，
+  // 那么就访问 objCreated.prototype.__proto__继续往上面寻找，直到找到,则停止对原型链对寻找，若最终还是没能找到，则返回 undefined 。
+  // 一直沿着原型链寻找下去，直到找到 Object.prototype.__proto__,指向 null，于是返回 undefined了。
+
+//组合式继承
+//通过call继承Parent的属性，并传入参数
+//将Child的原型对象指向Parent的实例，从而继承Parent的函数
+  /*
+    function Parent(value){
+        this.val = value;
+    }
+    Parent.prototype.getValue = function(){
+      console.log(this.val);
+    }
+    function Child(value){
+      Parent.call(this,value);//继承Parentd的属性
+    }
+    Child.prototype = new Parent('我是父亲');
+    var child = new Child('我是儿子');
+    console.log(child.val);
+    child.getValue();
+  */
+
+  // 寄生组合继承
+  function Parent(value){
+      this.val = value;
+  }
+  Parent.prototype.getValue = function(){
+      console.log(this.val);
+  }
+  function Child(value){
+      //继承Parentd的属性
+      Parent.call(this,value);
+  }
+  Child.prototype = Object.create(Parent.prototype); // 将父类的原型复制给了子类原型
+  var child = new Child("儿子");
+  console.log(child.val)
+  child.getValue();
+
+ console.log(Parent.prototype.constructor);
+ console.log(Child.prototype.constructor);
+</script>
+</html>

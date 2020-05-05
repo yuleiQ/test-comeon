@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  
+</body>
+<script>
+  // 浅拷贝：指两个对象指向同一个内存地址，其中一个改变会影响另一个
+  // 深拷贝：指复制后的新对象重新指向一个新的内存地址，两个对象改变会不影响
+  
+
+  // 数组
+  // 循环
+  // let a = [1,2,3];
+  // let b = [];
+  // for(let val of a) {
+  //   b.push(val)
+  // }
+  // b.push(4)
+  // console.log(a)
+  // console.log(b);
+
+  // slice
+  // let a = [1, 2, 3]
+  // let b = a.slice(0)
+  // b.push(4)
+  // console.log(a)
+  // console.log(b);
+  
+  // concat
+  // let a = [1, 2, 3]
+  // let b = a.concat()
+  // b.push(4)
+  // console.log(a)
+  // console.log(b);
+
+  // es6扩展运算符
+  // let a = [1, 2, 3]
+  // let b = [...a]
+  // b.push(4)
+  // console.log(a);
+  // console.log(b)
+
+  // 对象
+  // assign 只拷贝一层
+  // let a = { name: 'qqq', nick: { age: 14 } }
+  // let b = Object.assign({}, a);
+  // b.name = 'www';
+  // b.nick.age = 20;
+  // console.log(a); // {name: qqq, nick: {age:20}}
+  // console.log(b); // {name: www, nick: {age:20}}
+  // 扩展运算符
+  // let a = {name: 'qqq'}
+  // let b = { ...a }
+  // b.name = 'www';
+  // console.log(a);
+  // console.log(b)
+
+  // 浅拷贝只解决了第一层的问题，如果接下去还有对象，又回到原先的问题，两者享有相同的地址
+
+
+  // 深拷贝
+  
+  // 注意：拷贝Date引用类型会变成字符串; 忽略undefined symbol function
+  // let a = {
+  //   age: undefined,
+  //   sex: Symbol('male'),
+  //   jobs: function() {},
+  //   name: 'qqqq',
+  //   date:new Date(),
+  // }
+  // let b = JSON.parse(JSON.stringify(a))
+  // console.log(a)
+  // console.log(b)
+  
+  function deepCopy(obj) {
+    // result是储存拷贝之后的内容，根据参数的具体数据类型声明不同的类型来储存
+    let result = Array.isArray(obj) ? [] : {};
+    // 循环obj 中的每一项
+    for(let key in obj) {
+      if(obj.hasOwnProperty(key)) {// 判断对象是否包含特定的自身（非继承）属性。
+        if(typeof obj[key] === 'object') { // 判断是否为object类型，是就代表里面还有复杂数据类型，则直接利用递归再次调用copy函数
+          result[key] = deepCopy(obj[key]);
+        } else { // 否则直接赋值
+          result[key] = obj[key];
+        }
+      }
+    }
+    return result;
+  }
+
+
+</script>
+</html>
