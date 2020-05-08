@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div class="div">
+        <div class="a1">1</div>
+        <div class="a2">2</div>
+        <div class="a3">3</div>
+        <div class="a4">4</div>
+    </div>
+</body>
+</html>
+<style>
+    .div{
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-end;
+        width: 300px;
+        height: 300px;
+        border: 1px solid red;
+    }
+    .div div{
+        width: 100px;
+        height: 100px;
+        background-color: aqua;
+        margin: 10px;
+    }
+    /* .a1 {
+        flex-grow: 1;
+    } */
+    .a1 {
+       flex-shrink: 1;
+    }
+    .a2 {
+       flex-shrink: 0;
+    }
+    
+    
+</style>

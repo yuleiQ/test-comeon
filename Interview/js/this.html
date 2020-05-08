@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+</body>
+<script>
+    /*
+  var name = 'window'
+  var obj1 = {
+      name: '听风是风',
+      fn1: function () {
+          console.log(this.name)
+      },
+      fn2: () => console.log(this.name),
+      fn3: function () {
+          return function () {
+              console.log(this.name)
+          }
+      },
+      fn4: function () {
+          return () => console.log(this.name)
+      }
+  }
+  var obj2 = {
+      name: '行星飞行'
+  };
+
+  obj1.fn1();//听风是风 原因：隐式绑定
+  obj1.fn1.call(obj2);//行星飞行 原因：通过call apply bind的显式绑定
+
+  obj1.fn2();// 听风是风 正确答案是window 答错啦！！箭头函数并没有自己的this，它的this指向由上层执行上下文中的this决定;对象没有上下文，所以指向全局window
+  obj1.fn2.call(obj2);//行星飞行 正确答案是window 答错啦！！一旦箭头函数的this绑定成功，也无法被再次修改
+
+  obj1.fn3()();// window 原因：先执行fn3方法，返回了一个闭包fn，而fn执行时本质上等同于window.fn()，属于this默认绑定，所以this指向全局对象。
+  obj1.fn3().call(obj2);// 行星飞行 先执行fn3返回一个闭包，闭包执行时使用了call方法修改了this
+  obj1.fn3.call(obj2)();//行星飞行 正确答案是window 答错啦！！
+  // 解释：
+  // var fn = obj1.fn3.call(obj2);
+  // window.fn();//默认绑定
+
+  obj1.fn4()();// 听风是风 箭头函数this指向 取决于外层作用域
+  obj1.fn4().call(obj2);// 听风是风 显式绑定依旧无法改变箭头函数this
+  obj1.fn4.call(obj2)();// 行星飞行 虽然无法直接改变箭头函数的this，但可以通过修改上层上下文的this达到间接修改箭头函数this的目的
+
+*/
+
+
+  var name = 'window'
+
+function Person(name) {
+  this.name = name;
+  this.fn1 = function () {
+    console.log(this.name);
+  };
+  this.fn2 = () => console.log(this.name);
+  this.fn3 = function () {
+    return function () {
+      console.log(this.name)
+    };
+  };
+  this.fn4 = function () {
+    return () => console.log(this.name);
+  };
+};
+
+var obj1 = new Person('听风是风');
+console.dir(obj1);
+var obj2 = new Person('行星飞行');
+
+obj1.fn1(); // 听风是风   原因：this会自动绑定在new创建的对象上
+obj1.fn1.call(obj2); // 行星飞行 原因：显式绑定
+
+obj1.fn2(); // window 正确答案是听风是风 答错啦！！ 原因：箭头函数的this指向由上层上下文中的this决定，构造函数在new的过程中this指向了obj1，于是箭头函数的this同样也指向了obj1。
+obj1.fn2.call(obj2); // window 正确答案是听风是风 答错啦！！原因：箭头函数this指向obj1, 箭头函数的this无法改变
+
+obj1.fn3()(); // window
+obj1.fn3().call(obj2); // window 正确答案是行星飞行 答错啦！！ 原因：返回闭包利用call显式绑定指向obj2
+obj1.fn3.call(obj2)(); // 行星飞行 正确答案是window 答错啦！！ 原因：返回闭包还是被window调用
+
+obj1.fn4()(); // 听风是风
+obj1.fn4().call(obj2); // 听风是风 原因：返回闭包是箭头函数，this同样会指向obj1，虽然返回后也是window调用，但箭头函数无法被直接修改，还是指向obj1。
+obj1.fn4.call(obj2)();// 行星飞行 原因：箭头函数可通过修改外层作用域this指向从而达到间接修改的目的。
+</script>
+</html>

@@ -92,7 +92,33 @@
         return fBound;
       };
     }
+
+    Function.prototype._call = function(context) {
+      // 第一步
+      // 首先要获取调用call的函数，用this可以获取
+      context.fn = this;
+      context.fn();
+      delete context.fn;
+
+      // 第二步
+
+    }
+
+
+
+
+
+
+
+
     
+    var foo = {
+        value: 1
+    };
+    function bar() {
+        console.log(this.value);
+    }
+    bar._call(foo);
 
 </script>
 </html>

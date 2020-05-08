@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    html,body{
+         height:100%;
+         margin:0;
+         padding:0;
+    }
+    #left,#right {
+        float: left;
+        margin: 0 0 0 -271px;
+        width: 50%;
+        height:100%;
+    }
+    
+    #main {
+        width: 540px;
+        float: left;
+        background: green;
+        height:100%;
+    } 
+    #left .inner,#right .inner {
+        margin: 0 0 0 271px;
+        background: orange;
+        height:100%;
+    }
+    </style>
+<body>
+    <div id="left">
+        <div class="inner">this is left sidebar content</div>
+    </div>
+    <div id="main">this is main content</div>
+    <div id="right">
+        <div class="inner">this is right siderbar content</div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+     html,body{
+          margin:0;
+          padding:0;
+          height:100%;
+     }
+     body{
+          display:flex;
+          align-items:stretch;
+     }
+     #left,#right{
+          background-color:yellow;
+          flex:0 100px;
+     }
+     #center{
+          background-color:green;
+          flex:1 auto;
+     }
+
+</style>
+<body>
+    <div id="left">左边栏</div>
+    <div id="center">中间栏</div>
+    <div id="right">右边栏</div>
+</body>
+</html>

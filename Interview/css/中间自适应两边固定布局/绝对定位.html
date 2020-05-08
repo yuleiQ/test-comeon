@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    /* 绝对定位法 */
+     html,body{
+          margin:0;
+          padding:0;
+          height:100%;
+         
+     }
+     .bd {
+          position: relative;
+     }
+     #left,#right{
+          background-color:yellow;
+          position:absolute;
+          top:0;
+          width:100px;
+          height:200px;
+     }
+     #left{
+          left:0;
+          height: 300px;
+     }
+     #right{
+          right:0;
+     }
+     #center{
+          background-color:green;
+          height:200px;
+          margin:0 100px;
+     }
+
+</style>
+<body>
+   <div class="bd">
+     <div id="left">左边栏</div>
+     <div id="right">右边栏</div>
+     <div id="center">中间栏</div>
+   </div>
+
+</body>
+</html>
