@@ -9,6 +9,17 @@
   
 </body>
 <script>
+
+
+  // 猫吃鱼，狗吃肉，奥特曼打小怪兽。
+  // 有天狗想吃鱼了
+  // 猫.吃鱼.call(狗，鱼)
+  // 狗就吃到鱼了
+  // 猫成精了，想打怪兽
+  // 奥特曼.打小怪兽.call(猫，小怪兽)
+  // 猫也可以打小怪兽了
+
+
   // call apply异同点
   // 相同：改变函数执行时的上下文，将一个对象的方法交给另一个对象执行，并且是立即执行的
   // 不同：call第二个参数以参数列表的形式展现；apply是以数组或者类数组
@@ -57,68 +68,162 @@
     return Object.prototype.toString.call(obj) == '[object Array]';
   }
 
-  // 猫吃鱼，狗吃肉，奥特曼打小怪兽。
-  // 有天狗想吃鱼了
-  // 猫.吃鱼.call(狗，鱼)
-  // 狗就吃到鱼了
-  // 猫成精了，想打怪兽
-  // 奥特曼.打小怪兽.call(猫，小怪兽)
-  // 猫也可以打小怪兽了
-
-  // bind 返回值是函数，调用之后才会执行
-    if (!Function.prototype.bindMethod) {
-      Function.prototype.bindMethod = function(oThis) {
-        if (typeof this !== 'function') {
-          throw new TypeError('Function.prototype.bind - what is trying to be bound is not callable');
-        }
-        // 参数1表示slice(start,end)截取，将bind函数的参数数组取出来
-        var aArgs = Array.prototype.slice.call(arguments, 1);
-        var fToBind = this; // this执行func
-        var fNOP = function() {};
-        var fBound  = function() {
-          // 判断原始this对象是不是fBound的实例
-          oThis = this instanceof fBound ? this : oThis;
-          console.log(oThis)
-          // 拼接bind进来的参数和bind之后调用的参数
-          aArgs = aArgs.concat(Array.prototype.slice.call(arguments));
-          // 作用域绑定
-          return fToBind.apply(oThis, aArgs);
-        };
-        console.log(this)
-        if (this.prototype) {
-          fNOP.prototype = this.prototype;
-        }
-        fBound.prototype = new fNOP();
-        return fBound;
-      };
-    }
-
+ 
+/*
     Function.prototype._call = function(context) {
+      // 第三步： 考虑特殊this指向
+      // 判断是否为null或者undefined,同时考虑传递参数不是对象情况
+      context = context ? Object(context) : window;
       // 第一步
       // 首先要获取调用call的函数，用this可以获取
       context.fn = this;
-      context.fn();
-      delete context.fn;
+      // 第二步 传参
+      var args = [];
+      for(var i = 1, len= arguments.length; i<len;i++) {
+        args.push("arguments[" + i + "]");
+      }
+      var result = eval('context.fn(' + args +')');
 
-      // 第二步
+      delete context.fn;
+      return result;
+    
 
     }
 
-
-
-
-
-
-
-
-    
+    var value = 2;
     var foo = {
         value: 1
     };
-    function bar() {
-        console.log(this.value);
+    function bar(a,b,c) {
+      console.log(this.value);
+      return {
+          value: this.value,
+          account: a+b+c
+      }
     }
-    bar._call(foo);
+    bar._call(null); // 2
+    var result = bar._call(foo, 1,2,3);
+    console.log(result) // 1 {obj}
+ */
+  /*
+    Function.prototype._apply = function(context, arr) {
+      var context = Object(context) || window;
+      context.fn = this;
+      var result;
+      if(!arr) {
+        result = context.fn();
+      } else {
+        var args = [];
+        // 注意这里的i从0开始
+        for(var i=0, len=arr.length;i<len;i++) {
+          args.push('arr[' + i + ']');
+        }
+        result = eval('context.fn(' + args + ')')
+      }
+      delete context.fn
+      return result;
+    }
+  */
+
+    // 函数柯里化 函数调用时只传递一部分参数进行调用，函数会返回一个新函数去处理剩下的参数
+    // 函数柯里化使用了闭包，在执行内层函数时，使用了外层函数的局部形参x，从而构成了闭包
+    // function currying(x, y) {
+    //   console.log(x , y);
+    //   return function (y) {
+    //     console.log(x + y);
+    //   };
+    // };
+    // currying(1)(1);
+
+    
+    // 第一步：模拟函数柯里化
+    // 第二步：为bound方法新增this判断和原型继承，直接赋值，也会直接修改绑定函数的prototype,
+    Function.prototype._bind = function(obj) {
+      if (typeof this !== "function") {
+        throw new Error("Function.prototype.bind - what is trying to be bound is not callable");
+      };
+
+      // 第0位是this，所以得从第一位开始裁剪
+      var args = Array.prototype.slice.call(arguments, 1);
+      var fn = this;
+      // 创建一个空白函数fn_，单纯的拷贝fn的prototype
+      var fn_ = function () {};
+      fn_.prototype = fn.prototype;
+      
+      var bound = function() {
+        // 二次调用也抓取arguments对象
+        var params = Array.prototype.slice.call(arguments);
+        //通过constructor判断调用方式，为true this指向实例，否则为obj
+        obj = this.constructor === fn ? this : obj;
+        //注意concat的顺序
+        fn.apply(obj, args.concat(params));
+      }
+      //原型链继承
+      fn_.prototype = fn.prototype;
+      bound.prototype = new fn_()
+      return bound;
+    }
+    var z = 0;
+    var obj = {
+        z: 1
+    };
+
+    function fn(x, y) {
+        this.name = '听风是风';
+        console.log(this.z);
+        console.log(x);
+        console.log(y);
+    };
+    fn.prototype.age = 26;
+
+    var bound = fn._bind(obj, 2);
+    var person = new bound(3); //undefined 2 3
+
+    console.log(person.name); //听风是风
+    console.log(person.age); //26
+    person.__proto__.age = 18;
+    var person = new fn();
+    console.log(person.age); // 26
+
+/*
+    var z = 0;
+    var obj = {
+        z: 1
+    };
+
+    // 1. 不同调用方式函数内部this指向还不同
+    function fn(x, y) {
+        this.name = '听风是风';
+        console.log(this.z);
+        console.log(x);
+        console.log(y);
+    };
+    fn.prototype.age = 26;
+
+    var bound = fn.bind(obj, 2);
+    var person = new bound(3);//undefined 2 3
+    console.log(person) 
+    // 构造函数被new调用，创建了一个实例，函数内部的this指向此实例，当执行到this.z，this上并未赋值
+
+    console.log(person.name);//听风是风
+    console.log(person.age);//26
+
+    // 2. class 只能new构造调用
+    class Fn {
+      constructor(name, age) {
+        this.name = name;
+        this.age = age;
+      }
+      sayName() {
+        console.log(this.name);
+      }
+    }
+    const person = new Fn('听风是风', 22)
+    person.sayName(); //听风是风
+    const person1 = Fn(); //Class constructor Fn cannot be invoked without 'new'
+
+    // 以上两个例子bound函数在调用时还要考虑new调用和普通调用，因为两者this指向不同
+*/
 
 </script>
 </html>

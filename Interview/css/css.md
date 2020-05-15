@@ -89,7 +89,7 @@ align-self: center/flex-start/flex-end                                          
 order                                                                            规定子元素顺序，排序(数值越小，越靠前)
  
 ## 开发过程中怎样避免css class类名相互污染。
-- 首先需要了解css的规则是全局的，任何的组件的样式规范都使整个页面有效，产生`局部作用域`的方式就是起一个独一无二的名字，这就是(http://www.ruanyifeng.com/blog/2016/06/css_modules.html)[css Modules]的做法。CSS Modules 提供各种插件，这里基于webpack的css-loader,通过哈希计算，所以每次引用都会生成新的哈希，多人开发不会出现类名冲突
+- 首先需要了解css的规则是全局的，任何的组件的样式规范都使整个du页面有效，产生`局部作用域`的方式就是起一个独一无二的名字，这就是(http://www.ruanyifeng.com/blog/2016/06/css_modules.html)[css Modules]的做法。CSS Modules 提供各种插件，这里基于webpack的css-loader,通过哈希计算，所以每次引用都会生成新的哈希，多人开发不会出现类名冲突
 - Vue下：可以使用scoped避免污染
 - vue-loader提供了CSS Modules的一流集成，可以作为模拟scoped css的替代方案
 用法：具体看官网
@@ -254,7 +254,7 @@ rgba
 动画：animations和transitions
 
 
-## (https://github.com/zwwill/blog/issues/11)[两栏，三栏布局] 
+## [两栏，三栏布局](https://github.com/zwwill/blog/issues/11) 
 看对应例子
 圣杯布局的问题： 当浏览器无限缩小，圣杯将被破坏掉，所以最好设置一个min-width 设置方案“left-width * 2 + rigth-width”，原因：由于设置了相对定位，当left和right位置产生重叠，由于浮动的原因一行放不下，布局自然被打乱。双飞翼解决此问题
 
@@ -263,3 +263,12 @@ rgba
 圣杯 | 结构简单，无多余 dom 层 | 中间部分宽度小于左侧时布局混乱
 双飞翼		  |支持各种宽高变化，通用性强 | dom结构多余层，增加渲染树生成的计算量
 绝对定位 |结构简单，且无需清理浮动 | 两侧高度无法支撑总高度
+
+
+### 移动端的1px
+
+
+### transform用法
+
+
+### flex布局的原理

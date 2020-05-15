@@ -64,7 +64,7 @@
 
 
   // 深拷贝
-  
+  // 1. 深拷贝 JSON.parse(JSON.stringify())  但是不能拷贝函数 
   // 注意：拷贝Date引用类型会变成字符串; 忽略undefined symbol function
   // let a = {
   //   age: undefined,
@@ -77,10 +77,12 @@
   // console.log(a)
   // console.log(b)
   
+
+  // 原理：在拷贝的时候判断一下属性值的类型，如果是对象，我们递归调用深拷贝函数
   function deepCopy(obj) {
-    // result是储存拷贝之后的内容，根据参数的具体数据类型声明不同的类型来储存
+    // result是储存拷贝之后的内容，根据obj的类型判断是新建一个数组还是对象
     let result = Array.isArray(obj) ? [] : {};
-    // 循环obj 中的每一项
+    // 遍历obj，并且判断是obj的属性才拷贝
     for(let key in obj) {
       if(obj.hasOwnProperty(key)) {// 判断对象是否包含特定的自身（非继承）属性。
         if(typeof obj[key] === 'object') { // 判断是否为object类型，是就代表里面还有复杂数据类型，则直接利用递归再次调用copy函数

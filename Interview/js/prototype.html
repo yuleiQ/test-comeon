@@ -29,7 +29,7 @@
   console.log(func3);  // function
   // 以上为函数对象 是Function的实例
 
-  console.log(typeof Object);  //f unction
+  console.log(typeof Object);  //function
   console.log(typeof Function); // function
   // 由此可知 只要是Function的实例，就是函数对象
 
@@ -42,8 +42,8 @@
   console.log(typeof func.__proto__);//function
 
   const obj = {};
-  console.log(typeof obj.__proto__);// object
   console.log(typeof obj.prototype); //undefined
+  console.log(typeof obj.__proto__);// object
 
   console.log(obj.__proto__ === Object.prototype) // true
   console.log(func.__proto__ === Function.prototype) // true
@@ -86,43 +86,5 @@
   // prototype,所以它又自动去 objCreated.prototype 的属性/方法上面去找,结果还是没找到，
   // 那么就访问 objCreated.prototype.__proto__继续往上面寻找，直到找到,则停止对原型链对寻找，若最终还是没能找到，则返回 undefined 。
   // 一直沿着原型链寻找下去，直到找到 Object.prototype.__proto__,指向 null，于是返回 undefined了。
-
-//组合式继承
-//通过call继承Parent的属性，并传入参数
-//将Child的原型对象指向Parent的实例，从而继承Parent的函数
-  /*
-    function Parent(value){
-        this.val = value;
-    }
-    Parent.prototype.getValue = function(){
-      console.log(this.val);
-    }
-    function Child(value){
-      Parent.call(this,value);//继承Parentd的属性
-    }
-    Child.prototype = new Parent('我是父亲');
-    var child = new Child('我是儿子');
-    console.log(child.val);
-    child.getValue();
-  */
-
-  // 寄生组合继承
-  function Parent(value){
-      this.val = value;
-  }
-  Parent.prototype.getValue = function(){
-      console.log(this.val);
-  }
-  function Child(value){
-      //继承Parentd的属性
-      Parent.call(this,value);
-  }
-  Child.prototype = Object.create(Parent.prototype); // 将父类的原型复制给了子类原型
-  var child = new Child("儿子");
-  console.log(child.val)
-  child.getValue();
-
- console.log(Parent.prototype.constructor);
- console.log(Child.prototype.constructor);
 </script>
 </html>
