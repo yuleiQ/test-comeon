@@ -255,7 +255,7 @@ rgba
 
 
 ## [两栏，三栏布局](https://github.com/zwwill/blog/issues/11) 
-看对应例子
+对应例子html
 圣杯布局的问题： 当浏览器无限缩小，圣杯将被破坏掉，所以最好设置一个min-width 设置方案“left-width * 2 + rigth-width”，原因：由于设置了相对定位，当left和right位置产生重叠，由于浮动的原因一行放不下，布局自然被打乱。双飞翼解决此问题
 
 布局 | 优点 | 缺点
@@ -271,4 +271,9 @@ rgba
 ### transform用法
 
 
-### flex布局的原理
+### 主流浏览器的内核
+1. trident内核/IE内核（IE）
+2. blink内核（Chrome） 
+3. gecko内核(FireFox)
+4. Webkit内核(Safari)
+5. Preston内核(Opera)
