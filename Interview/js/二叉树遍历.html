@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+</body>
+<script>
+    const preorderTraversal = (root) => {
+        if(root == null) return []
+        const result = []
+        const preOrderTraverseNode = (node) => {
+            if (node) {
+                // 根节点
+                result.push(node.val);
+                // 遍历左子树
+                preOrderTraverseNode(node.left);
+                // 遍历右子树
+                preOrderTraverseNode(node.right)
+            } 
+        }
+        preOrderTraverseNode(root);
+        return result;
+    }
+
+
+    const preorderTraversal = (root) => {
+        const list = [];
+        const stack = [];
+
+        // 当根节点不为空，根节点进栈
+        if(root) {stack.push(root)}
+        while(stack.length > 0) {
+            // 返回栈顶的值
+            const curNode = stack.pop();
+            // 先访问根节点
+            list.push(curNode.val);
+            if (curNode.right!==null) {
+                stack.push(curNode.right)
+            }
+            if (curNode.left!==null) {
+                stack.push(curNode.left)
+            }
+        }
+        return list
+    }
+
+
+    const inorderTraversal = (root) => {
+        let result = [];
+        const inorderTraversal = (node) => {
+            if (node) {
+                // 遍历左子树
+                inorderTraversal(node.left);
+                // 根节点
+                result.push(node.val);
+                // 遍历右子树
+                inorderTraversal(node.right);
+            }
+        }
+        inorderTraversal(root);
+        return result;
+    }
+
+    const inorderTraversal = (root) => {
+        let list = [];
+        let stack = [];// 申请一个栈
+        let node = root; // 变量node初始化为根节点
+        // 1、 先把node节点压入栈中，对以node节点为头的整棵树来说，依次把整棵树的左子树压入栈中，即不断令node=node.left，循环直到node为空
+        // 2、 取出栈顶节点，将值存到list，再让node=node.right，若存在right节点，重复1、
+        // 3、直到stack为空，node为空结束
+        while(node || stack.length) {
+            // 遍历左子树
+            while(node) {
+                stack.push(node);
+                node = node.left;
+            }
+            node = stack.pop();
+            list.push(node.val);
+            node = node.right;
+        }
+        return list;
+    }
+
+    const postorderTraversal = (root) => {
+        let result = [];
+        const postorderTraversal = (node) => {
+            if (node === null) return;
+            // 先遍历左子树
+            postorderTraversal(node.left);
+            // 遍历右子树
+            postorderTraversal(node.right);
+            // 根节点
+            result.push(node.val);
+        }
+        postorderTraversal(root);
+        return result;
+    }
+
+    const postorderTraversal = (root) => {
+        const list = [];
+        const stack = [];
+
+        // 当根节点不为空，根节点进栈
+        if(root) stack.push(root)
+        while(stack.length > 0) {
+            // 返回栈顶元素
+            const curNode = stack.pop();
+            // 根左右=>右左根
+            list.unshift(curNode.val);
+            // 将右左根=》左右根
+            // 栈的特性：先进后出，所以先左子树入栈，再右子树入栈，出栈的顺序就变更为先右后左
+            if (curNode.left !== null) {
+                stack.push(curNode.left)
+            }
+            if (curNode.right !== null) {
+                stack.push(curNode.right)
+            }
+        }
+        return list
+    }
+</script>
+</html>

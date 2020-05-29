@@ -318,6 +318,9 @@ function throttle(fn, delay) {
     }
 };
 ```
+### 数组的方法，关注改变原数组的方法和不改变原数组的方法
+
+### forEach和map的区别
 
 ### ES6
 1. let const
@@ -621,4 +624,193 @@ sessionStorage不在不同的浏览器窗口中共享，即使是同一个页面
 localStorage在所有同源窗口中都是共享的；
 cookie也是在所有同源窗口中都是共享的。
 
+
+### 实现一个event
+
+发布订阅模式：eve实例就是一个事件调度中心，发布者通过事件调度中心发布事件，订阅者通过事件调度中心订阅事件，两者谁也不关心谁是解耦的，他们关注的是时间本身
+
+观察者模式：耦合度更高，通常用来实现一些响应式的效果，在观察者模式中：只有两个主体，分别是目标对象Subject 观察者Observer
+
+观察者实现一个update，在目标对象通知更新时被调用
+
+目标对象要维护一个观察者列表， 在自身状态改变时，通过notify遍历观察者列表，通知所有观察者
+
+由此看出他的耦合度比较高，角色很明确，没有事件调度中心作为中间者
+
+
+
+### (二叉树的遍历)[https://leetcode-cn.com/problems/binary-tree-postorder-traversal/]
+
+#### 二叉树的先序遍历
+扩展二叉树：将二叉树的每个结点的空指针引出一个虚结点，其值为一个特定值，比如“#”
+
+先序遍历：中左右
+
+- 递归方式实现前序遍历
+1. 先访问根节点
+2. 再序遍历左子树
+3. 最后序遍右子树
+
+```
+let preorderTraversal = (root) => {
+    if(root == null) return []
+    let result = []
+    let preOrderTraverseNode = (node) => {
+        if (node) {
+            // 根节点
+            result.push(node.val);
+            // 遍历左子树
+            preOrderTraverseNode(node.left);
+            // 遍历右子树
+            preOrderTraverseNode(node.right)
+        } 
+    }
+    preOrderTraverseNode(root);
+    return result;
+}
+
+```
+
+- 迭代方式实现
+利用栈记录遍历过程，实际上，递归就使用了调用栈，所以我们可以使用栈模拟递归
+
+
+1. 根入栈
+2. 根节点出栈，将根节点值放入结果数组
+3. 遍历左子树，右子树，（栈先入后出），所以我们先右子树入栈，再左子树入栈
+4. 继续出栈 依次循环出栈遍历入栈，直到栈为空，遍历完成
+
+```
+ const preorderTraversal = (root) => {
+    const list = [];
+    const stack = [];
+
+    // 当根节点不为空，根节点进栈
+    if(root) {stack.push(root)}
+    while(stack.length > 0) {
+        // 返回栈顶的值
+        const curNode = stack.pop();
+        // 先访问根节点
+        list.push(curNode.val);
+        // 
+        if (curNode.right!==null) {
+            stack.push(curNode.right)
+        }
+        if (curNode.left!==null) {
+            stack.push(curNode.left)
+        }
+    }
+    return list
+}
+```
+
+
+中序遍历：左中右
+
+- 递归实现
+1. 先中序遍历左子树
+2. 再访问根节点
+3. 最后中序遍历右子树
+
+```
+const inorderTraversal = (root) => {
+    let result = [];
+    const inorderTraversal = (node) => {
+        if (node) {
+            // 遍历左子树
+            inorderTraversal(node.left);
+            // 根节点
+            result.push(node.val);
+            // 遍历右子树
+            inorderTraversal(node.right);
+        }
+    }
+    inorderTraversal(root);
+    return result;
+}
+```
+
+- 非递归实现
+1. 从根节点开始，先将根节点压入栈
+2. 然后再将所有左子结点压入栈，取出栈顶节点，保存节点值
+3. 再将当前指针移到其右子节点上，若存在右子节点，则下次循环又可将其所有左子结点压入栈中
+
+```
+const inorderTraversal = (root) => {
+    let list = [];
+    let stack = [];// 申请一个栈
+    let node = root; // 变量node初始化为根节点
+    // 1、 先把node节点压入栈中，对以node节点为头的整棵树来说，依次把整棵树的左子树压入栈中，即不断令node=node.left，循环直到node为空
+    // 2、 取出栈顶节点，将值存到list，再让node=node.right，若存在right节点，重复1、
+    // 3、直到stack为空，node为空结束
+    while(node || stack.length) {
+        // 遍历左子树
+        while(node) {
+            stack.push(node);
+            node = node.left;
+        }
+        node = stack.pop();
+        list.push(node.val);
+        node = node.right;
+    }
+    return list;
+}
+```
+
+后序遍历：左右中
+
+- 递归
+
+1. 先后序遍历左子树
+2. 再后序遍历右子树
+3. 最后访问根节点
+
+const postorderTraversal = (root) => {
+    let result = [];
+    const postorderTraversal = (node) => {
+        if (node === null) return;
+        // 先遍历左子树
+        postorderTraversal(node.left);
+        // 遍历右子树
+        postorderTraversal(node.right);
+        // 根节点
+        result.push(node.val);
+    }
+    postorderTraversal(root);
+    return result;
+}
+
+- 非递归
+
+后序遍历与前序遍历不同的是：
+
+后序遍历是左右根,而前序遍历是根左右
+
+1. 把前序遍历的push改为unshift，此时遍历顺序由根左右变为了右左根
+2. 只需要把右左根变为左右根即可完成后序遍历
+
+```
+const postorderTraversal = (root) => {
+    const list = [];
+    const stack = [];
+
+    // 当根节点不为空，根节点进栈
+    if(root) stack.push(root)
+    while(stack.length > 0) {
+        // 返回栈顶元素
+        const curNode = stack.pop();
+        // 根左右=>右左根
+        list.unshift(curNode.val);
+        // 将右左根=》左右根
+        // 栈的特性：先进后出，所以先左子树入栈，再右子树入栈，出栈的顺序就变更为先右后左
+        if (curNode.left !== null) {
+            stack.push(curNode.left)
+        }
+        if (curNode.right !== null) {
+            stack.push(curNode.right)
+        }
+    }
+    return list
+}
+```
 
