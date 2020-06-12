@@ -814,3 +814,20 @@ const postorderTraversal = (root) => {
 }
 ```
 
+### 洗牌算法
+
+### 函数柯里化
+
+### 单例模式
+
+### reduce
+array.reduce(function(accumulator, currentValue, currentIndex, array), initialValue)
+
+reduce第一个值是累加器
+      第二个值是当前value值
+      第三个是跟随第二个值的索引值
+      第四个是当前正在被循环的数组。
+
+      initialValue是初始值
+
+注意点：如果initalValue有值，循环从索引0开始，此时accumulator就是initialValue，currentValue值就是arr[0]；如果reduce未提供初始值，则arr[0]作为初始值赋予给accumulator，循环从索引1开始，currentValue值就是arr[1]了；

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+</body>
+<script>
+    // reduce
+
+    // 1. 数组求和
+    var arr = [1, 2, 3, 4]
+    const reduceArr = arr.reduce((sum, curVal, curIndex) => {
+        return sum+=curVal
+    }, 5);
+    console.log(reduceArr);
+
+    // 2. 数组降维
+    arr = [[1,2],[3,4],[5,6]]
+    const reduceArr1 = arr.reduce((sum, curVal, curIndex) => {
+        return sum.concat(curVal)
+    }, [])
+    console.log(reduceArr1)
+    // 3. 数组去重
+    arr = [1,3,4,2,3]
+    const reduceArr2 = arr.reduce((sum, curVal, curIndex) => {
+        return sum.includes(curVal) ? sum : sum.concat(curVal)
+    }, [])
+    console.log(reduceArr2)
+
+    // 4. 多维数组的降维
+    arr = [0,[1],[2, 3],[4, [5, 6, 7]]];
+    const  reduceArr3 =  function(arr) {
+        return arr.reduce((sum, curVal, curIndex) => {
+            return sum.concat(
+                Array.isArray(curVal) ? 
+                reduceArr3(curVal) :
+                curVal
+            )
+        }, [])
+    }
+    console.log(reduceArr3(arr));
+
+
+    
+</script>
+</html>

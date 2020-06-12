@@ -9,35 +9,29 @@
     
 </body>
 <script>
-var oldData=[
-   {date:'2019-08-26',"queue_id":219,"queue_num":4,"queue_status":1,"queue_name":'预约接种'},
-   {date:'2019-08-26',"queue_id":218,"queue_num":2,"queue_status":1,"queue_name":'预约接种'},
-   {date:'2019-08-25',"queue_id":217,"queue_num":1,"queue_status":1,"queue_name":'预约接种'}
-]      
-var oldDataRule = []
-oldData.forEach(el => {
-  var oldObj = {
-    date: el.date,
-    list:[]
-  }
-  oldObj.list.push(el)
-  oldDataRule.push(oldObj)
-})
-console.log((oldDataRule))
-var newData = []
-var newObj = {}
-oldDataRule.forEach((el, i) => {
-    if (!newObj[el.date]) {
-        newData.push(el);
-        newObj[el.date] = true;
-    } else {
-        newData.forEach(el => {
-            if (el.date === oldDataRule[i].date) {
-                el.list = el.list.concat(oldDataRule[i].list);
-            }
-        })
-    }
-})
-console.log(newData,newObj)
+    var oldData=[
+        {date:'2019-08-26',"queue_id":219,"queue_num":4,"queue_status":1,"queue_name":'预约接种'},
+        {date:'2019-08-26',"queue_id":218,"queue_num":2,"queue_status":1,"queue_name":'预约接种'},
+        {date:'2019-08-25',"queue_id":217,"queue_num":1,"queue_status":1,"queue_name":'预约接种'}
+    ]      
+    var newData = []
+    var newObj = {}
+    oldDataRule.forEach((el, i) => {
+        if (!newObj[el.date]) {
+            newData.push(el);
+            newObj[el.date] = true;
+        } else {
+            newData.forEach(el => {
+                if (el.date === oldDataRule[i].date) {
+                    el.list = el.list.concat(oldDataRule[i].list);
+                }
+            })
+        }
+    })
+    console.log(newData,newObj);
+
+
+
+
 </script>
 </html>

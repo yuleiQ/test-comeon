@@ -15,10 +15,6 @@
   // 有天狗想吃鱼了
   // 猫.吃鱼.call(狗，鱼)
   // 狗就吃到鱼了
-  // 猫成精了，想打怪兽
-  // 奥特曼.打小怪兽.call(猫，小怪兽)
-  // 猫也可以打小怪兽了
-
 
   // call apply异同点
   // 相同：改变函数执行时的上下文，将一个对象的方法交给另一个对象执行，并且是立即执行的
@@ -134,7 +130,23 @@
     //   };
     // };
     // currying(1)(1);
+      
 
+    // 函数柯里化的实现
+    function currying(fn, ...args) {
+      if(args.length >=  fn.length) {
+        return fn(...args)
+      } else {
+        return (...args2) => currying(fn, ...args, ...args2)
+      }
+    }
+
+    const curryingFun = currying(function(a, b, c) {
+      console.log([a,b,c])
+    })
+    curryingFun(1,2,3);
+    curryingFun(1,2)(3)
+    curryingFun(1)(2)(3)
     
     // 第一步：模拟函数柯里化
     // 第二步：为bound方法新增this判断和原型继承，直接赋值，也会直接修改绑定函数的prototype,

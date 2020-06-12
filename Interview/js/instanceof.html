@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+</body>
+<script>
+    // 判断proto是否存在 如果存在是否等于原型 如果不等于：proto === target.__proto__.__proto__，然后一次次循环直到值为null
+    function _instance(target, origin) {
+        let proto = target.__proto__;
+        let prototype = origin.prototype;
+        if(proto) {
+            if(origin.prototype === proto) {
+                return true;
+            } else {
+                return _instance(proto);
+            }
+        } else {
+            return false
+        }
+    }
+</script>
+</html>
