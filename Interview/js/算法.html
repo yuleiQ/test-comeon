@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+</body>
+<script>
+// 统计一个字符串出现最多的字母和出现的次数
+var str = 'abcdeddd';
+
+TongJi(str)
+
+function TongJi(str) {
+    let strArr = str.split('');
+    let obj = {};
+    for(let i = 0; i < strArr.length; i++) {
+        if (!obj[strArr[i]]) {
+            obj[strArr[i]] = 1;
+        } else {
+            obj[strArr[i]]++;
+        }
+    }
+    let maxValue = 0;
+    let maxKey = '';
+    for(let i in obj) {
+       if (obj[i] > maxValue) {
+           maxValue = obj[i];
+           maxKey = i
+       }
+    }
+    console.log(maxValue, maxKey)
+}
+
+</script>
+</html>
