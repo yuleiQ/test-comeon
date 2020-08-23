@@ -51,6 +51,9 @@ proxy优势：
 3. proxy的第二个参数有10几种劫持方法
 4. Proxy作为新标准将受到浏览器厂商重点持续的性能优化
 
+
+### vue数据响应式原理以及实现
+
 ### vuex实现原理，如何使用
 
 ### vue-router原理以及实现
@@ -66,3 +69,17 @@ proxy优势：
 
 边界情况：$parent $children $root $refs provide/inject 
 非属性特性：$attrs $listeners
+
+
+### 生命周期钩子函数
+- 三个阶段：
+  - 初始化
+  - 更新
+  - 销毁
+
+- 获取异步数据到底是写在created还是mounted?
+  本质上是没有差别的。我们异步获取数据的时间其实远远大于初始化创建挂载的时间的。
+  - created 组件实例已创建，data数据可以访问了，但没挂载，当前数据还没转化为真实dom元素，由于未挂载所以dom元素不存在
+  - mounted 已挂载，将虚拟dom转化为真实dom，dom元素可以访问。
+- 页面初始化时触发什么？
+  beforeCreate => created => beforeMount => mounted
