@@ -1,0 +1,10 @@
+@font-face {
+    font-family: "webfont";
+    font-display: swap;
+    src: url("../iconfont/webfont.woff2") format('woff2');
+}
+
+body {
+    background-color: red;
+    font-family: "webfont"!important
+}
