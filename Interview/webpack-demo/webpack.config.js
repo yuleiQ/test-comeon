@@ -1,6 +1,7 @@
 // webpack，基于nodejs，遵守commonjs规范
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const htmlWebpackPlugin = require("html-webpack-plugin");
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const path = require('path');
 module.exports = {
   mode: 'development',
@@ -24,12 +25,24 @@ module.exports = {
     // filename: 'main.js'
     filename: '[name]-[hash:6].js'
   },
+  devtool:"cheap-module-eval-source-map",
+  devServer: {    
+    contentBase: "./dist",
+    open: true, 
+    port: 8081  
+  },
   // 插件
   plugins: [
     new CleanWebpackPlugin(),
+    new MiniCssExtractPlugin({ 
+      filename: "css/[name].css"
+    }),
     new htmlWebpackPlugin({
-      title: 'lei',
+      // 生成页面得title元素
+      title: '首页',
+      // 生成的文件名
       filename: 'index.html',
+      // 指定模板
       template: './src/index.html'
     })
   ],
@@ -49,15 +62,21 @@ module.exports = {
         // css-loader是把css模块的内容加到js模块中，即css in js方式
         // style-loader 从js中提取css的loader, 在html中创建style标签，把css内容放在这个style标签中
         // use: ["style-loader", "css-loader", "less-loader"]
-        use: ['style-loader',  {
-          loader: 'css-loader',
-          options: {
-            // 开启css 模块化
-            modules: true
-          }
-        }, {
-          loader: 'postcss-loader',
-        }, "less-loader"]
+        use: [
+          // 'style-loader',  
+          // 提取出独立的css文件
+          MiniCssExtractPlugin.loader,
+          {
+            loader: 'css-loader',
+            options: {
+              // 开启css 模块化
+              modules: true
+            }
+          }, {
+            loader: 'postcss-loader',
+          }, 
+          "less-loader"
+        ]
       },
       {
        test: /\.(png|jpe?g|gif)$/,
