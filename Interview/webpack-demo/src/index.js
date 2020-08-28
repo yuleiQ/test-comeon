@@ -5,7 +5,7 @@
 // import './css/index.css'
 // import './css/index.less'
 
-console.log('test')
+// console.log('test')
 // 这是cdn暴露的全局变量，直接使用即可
 // console.log($)
 
@@ -85,3 +85,38 @@ console.log('test')
 //     el: '#app',
 //     render(h){return h('div','render')}
 // });
+
+// css tree-shaking
+// import './css/index.less'
+
+// js tree-shaking
+// import {add} from './logic/expo';
+// add(1,2);
+
+
+// 副作用
+// import './css/index.css'
+
+// 代码分割
+// import _ from 'lodash';
+// console.log(_.join(['a','b','c'],'****'))
+
+// import Vue from 'vue'
+// const app = new Vue({
+//     el: '#app',
+//     render(h){return h('div','render')}
+// });
+
+// 作用域提升
+// import hello from './logic/hello.js'
+// console.log(hello)
+
+// dll
+import React, { Component } from "react";
+import ReactDom from "react-dom";
+class App extends Component {
+    render() {
+        return <div> hello world </div>;  
+    }
+}
+ReactDom.render(<App/>, document.getElementById("app"));

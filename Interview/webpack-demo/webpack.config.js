@@ -3,11 +3,28 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const htmlWebpackPlugin = require("html-webpack-plugin");
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const path = require('path');
-const webapck = require('webpack');
+const webpack = require('webpack');
 // Vue Loader 的插件
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
+const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin")
+const PurifyCSS = require('purifycss-webpack');
+const glob = require('glob-all');
 
-module.exports = {
+// 量化
+const SpeedMeasurePlugin = require("speed-measure-webpack-plugin");
+const smp = new SpeedMeasurePlugin();
+
+// const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+
+// dll
+// const AddAssetHtmlWebpackPlugin = require('add-asset-html-webpack-plugin');
+
+const HardSourceWebpackPlugin = require('hard-source-webpack-plugin')
+
+// happypack 解决loader的消耗
+const HappyPack = require('happypack')
+
+const config = {
   mode: 'development',
   // 项目打包的相对路径 必须是绝对路径 
   // context: process.cwd(),
@@ -27,7 +44,7 @@ module.exports = {
     path: path.resolve(__dirname, './dist'),
     // 生成文件名称
     // filename: 'main.js'
-    filename: '[name]-[contenthash:8].js'
+    filename: '[name]-[contenthash:8].js',
   },
   devtool:"cheap-inline-source-map",
   devServer: {    
@@ -65,11 +82,36 @@ module.exports = {
       },
       extensions:['.js','.json','.vue']
   },
+  optimization: {
+    usedExports: true, // 哪些导出的模块被使⽤了，再做打包
+    // splitChunks: {
+    //   chunks: 'all', // 所有的chunks代码公共的部分离出来成为⼀个单独的文件
+    //   // minChunks: 2 // 打包生成的chunk文件最少有几个chunk引⽤了这个模块
+    //   cacheGroups: {
+    //     vue: {
+    //       test: /vue/, // 正则规则验证，如果符合就提取 chunk,name:"vue"
+    //       name: 'vue'
+    //     },
+    //     lodash: {
+    //       test: /lodash/,
+    //       name: 'lodash', // 要缓存的分隔出来的 chunk 名称
+    //     }
+    //   }
+    // },
+    concatenateModules: true
+  },
   // 插件
   plugins: [
     new CleanWebpackPlugin(),
     new MiniCssExtractPlugin({ 
       filename: "css/[name]-[contenthash:8].css"
+    }),
+    new OptimizeCSSAssetsPlugin({
+      // 引入cssnano配置压缩选项 cssnano是postcss的依赖
+      cssProcessor: require('cssnano'),
+      cssProcessorOptions: {
+        discardComments: {removeAll: true}
+      }
     }),
     new htmlWebpackPlugin({
       // 生成页面得title元素
@@ -77,9 +119,40 @@ module.exports = {
       // 生成的文件名
       filename: 'index.html',
       // 指定模板
-      template: './src/index.html'
+      template: './src/index.html',
+      minify: {        // 压缩HTML文件        
+        removeComments: true, // 移除HTML中的注释        
+        collapseWhitespace: true, // 删除空白符与换行符        
+        minifyCSS: true // 压缩内联css      
+      }
     }),
-    new VueLoaderPlugin()
+     // 清除无⽤
+    new PurifyCSS({
+      paths: glob.sync([// 要做 CSS Tree Shaking 的路径文件
+        path.resolve(__dirname, './src/*.html'), // 请注意，我们同样需要对html文件tree shaking
+        path.resolve(__dirname, './src/*.js')      
+      ])    
+    }),
+    // react借助DllReferencePlugin告诉webpack有那些依赖有对应的dll文件，使用动态链接库
+    // 借助dllPlugin生成动态库文件
+    new webpack.DllReferencePlugin({
+      manifest: path.resolve(__dirname,"./dll/react-manifest.json")    
+    }),
+    // 动态导入到html中
+    // new AddAssetHtmlWebpackPlugin({
+    //   filepath: path.resolve(__dirname, './dll/react.dll.js') // 对应的 dll文件路径 
+    // }),
+    new HardSourceWebpackPlugin(),
+    new HappyPack({
+      id: 'css',
+      loaders: ["style-loader", "css-loader"]
+    }),
+    new HappyPack({
+      id: 'js',
+      loaders: ["babel-loader"]
+    })
+    // new BundleAnalyzerPlugin()
+    // new VueLoaderPlugin(),
     // new webpack.HotModuleReplacementPlugin()
   ],
   // 处理不认识的模块
@@ -91,7 +164,8 @@ module.exports = {
         // loader的执行顺序从后往前
         // css-loader是把css模块的内容加到js模块中，即css in js方式
         // style-loader 从js中提取css的loader, 在html中创建style标签，把css内容放在这个style标签中
-        use:  ['style-loader','css-loader'],
+        // use:  ['style-loader','css-loader'],
+        use: ["HappyPack/loader?id=css"],
         include: path.resolve(__dirname, "./src")
       },
       {
@@ -143,7 +217,10 @@ module.exports = {
         include: path.resolve(__dirname, "./src"),
         // 排除
         // exclude: '/node_modules/',
-        loader: 'babel-loader'
+        // loader: 'babel-loader',
+        use: {
+          loader: 'HappyPack/loader?id=js'
+        }
       },
       {
         test: /\.vue$/,
@@ -153,3 +230,6 @@ module.exports = {
     ]
   }
 }
+
+// module.exports = smp.wrap(config)
+module.exports = config;
