@@ -130,7 +130,7 @@ function bindEvent() {
     ele = null;
 };
 bindEvent();
-2. setTimeout使用
+2. setTimeout使用 setTimeout(() => {})
 3. let
 ```
 垃圾回收机制：
@@ -140,6 +140,7 @@ bindEvent();
 现在各浏览器垃圾回收机制的方法：标记清除，引用计数
 标记清除：当变量进入环境会被标记“进入环境”，离开环境时被标记为“离开环境”，浏览器定时回收‘离开环境’的变量
 
+### ESM commonJs
 
 
 

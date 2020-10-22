@@ -64,7 +64,7 @@ class KVue{
 
     // 代理
     proxy(this, '$data')
-
+    // 编译compile
     new Compiler(options.el, this)
   }
  
@@ -98,10 +98,10 @@ class Watcher{
     // 临时放入watchers数组
     // watchers.push(this)
 
-    // Dep.target静态属性上设置为当前watcher实例???
+    // Dep.target静态属性上设置为当前watcher实例，目前用来与dep通信
     Dep.target = this;
     this.vm[this.key] // 读取触发了getter
-    // 置收集完空
+    // 收集完就置空
     Dep.target = null;
   }
 
@@ -110,7 +110,7 @@ class Watcher{
   }
 }
 
-// 依赖收集 管理某个key相关的所有watchers实例
+// （大管家）依赖收集 管理某个key相关的所有watchers实例
 class Dep{
   constructor() {
     this.deps = []
