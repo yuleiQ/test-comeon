@@ -1,5 +1,8 @@
 // webpack，基于nodejs，遵守commonjs规范
+
+// 删除文件夹目录(默认删除 output 下 path 指定的目录)
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+// 会在打包结束后，自动生成一个 html 文件，并将打包生成的 js 自动引入到这个 html 文件中
 const htmlWebpackPlugin = require("html-webpack-plugin");
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const path = require('path');
@@ -114,7 +117,7 @@ const config = {
       }
     }),
     new htmlWebpackPlugin({
-      // 生成页面得title元素
+      // 生成页面的title元素
       title: '首页',
       // 生成的文件名
       filename: 'index.html',
@@ -185,7 +188,8 @@ const config = {
               // 开启css 模块化
               modules: true
             }
-          }, {
+          }, 
+          {
             loader: 'postcss-loader',
           }, 
           "less-loader"
@@ -201,6 +205,7 @@ const config = {
          options: {
           //  ext占位符
            name: '[name]_[hash:6].[ext]',
+          //  配置打包后文件放置的路径位置  
            outputPath: 'images/',
            //  小于2048，才转换成base64
            limit: 2048

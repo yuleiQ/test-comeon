@@ -1,4 +1,5 @@
 const path = require('path')
+const CopyRightWebpackPlugin = require('./myplugin/copyright-webpack-plugin');
 module.exports = {
     entry: './src/index.js',
     mode: 'development',
@@ -34,5 +35,8 @@ module.exports = {
                 ]
             }
         ]
-    }
+    },
+    plugins: [
+        new CopyRightWebpackPlugin()
+    ]
 }

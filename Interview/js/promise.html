@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <div></div>
+</body>
+<script>
+  // 图片加载
+  // function loadingSrc(src, resolve, reject) {
+  //   let image = new Image();
+  //   image.src = src;
+  //   image.onload = () => {
+  //     resolve(image)
+  //   };
+  //   image.onerror = reject
+  // }
+
+  // loadingSrc('loading.gif',(image) => {
+  //     console.log('执行成功')
+  //     document.body.appendChild(image)
+  //   }, () => {
+  //     console.log('执行失败')
+  //   });
+  //   console.log('1')
+
+  
+  // 定时执行嵌套 
+  // function interval(callback, delay) {
+  //   let id = setInterval(() => {
+  //     callback(id)
+  //   }, delay);
+  // }
+
+  // interval((timeId) => {
+  //   const div = document.querySelector('div');
+  //   let left = parseInt(window.getComputedStyle(div).left);
+  //   div.style.left = left + 10 + 'px'
+  //   if (left >= 200) {
+  //     clearInterval(timeId);
+  //     interval((timeId) => {
+  //       let width = parseInt(window.getComputedStyle(div).width);
+  //       div.style.width = width - 10 + 'px'
+  //       if(width <=20) {
+  //         clearInterval(timeId);
+  //       } 
+  //     }, 1000)
+  //   }
+  // });
+  // console.log(1)
+
+  // setTimeout(() => { 
+  //   console.log('setTimeout');
+  // }, 1000);
+  // console.log('a');
+
+
+  // new Promise((resolve) => {
+  //   resolve();
+  //   console.log('b');
+  // }).then(value => console.log('成功'))
+
+  // console.log('c')
+
+
+
+  // 1. 声明定义类并声明Promise状态与值
+  class PR {
+    static PENDING = 'pending';
+    static FULFILLED = 'fulfilled';
+    static REJECTED = 'rejected';
+
+    constructor(executor) {
+      this.status = PR.PENDING; // 初始化状态为pending
+      this.value = null; // 值
+      // 4. 处理promise为pending时的状态
+      this.callbacks = [];
+
+      try {
+        // executor执行者
+        executor(this.resolve.bind(this), this.reject.bind(this))
+      } catch (e) {
+        this.reject(e)
+      }
+    }
+
+ 
+    resolve(value) {
+      if (this.status === PR.PENDING) {
+        this.status = PR.FULFILLED; // 状态置为完成
+        this.value = value;
+        // 4.2 resovle中添加处理callback方法并且定义为异步任务
+        setTimeout(() => {
+          this.callbacks.map(callback => {
+            callback.onFulfilled(value)
+          })
+        })
+      }
+    }
+
+    reject(value) {
+      if (this.status === PR.PENDING) {
+        this.status = PR.REJECTED; // 状态置为失败
+        this.value = value;
+        // 4.3 reject中添加处理callback方法并定义为异步任务
+        setTimeout(() => {
+          this.callbacks.map(callback => {
+            callback.onRejected(value)
+          })
+        })
+      }
+    }
+
+    // 2. then方法来处理状态的改变
+    then(onFulfilled, onRejected) { // then接收两个参数，即成功和失败的回调函数
+      // 因为两个函数参数不是必填的，所以需要多做一步操作，设置默认值为函数
+      if (typeof onFulfilled != 'function') {
+        onFulfilled = value => value;
+      }
+
+      if (typeof onRejected != 'function') {
+        onRejected = value => value
+      }
+
+      // 5. 链式调用
+      let promise = new PR((resolve, reject) => {
+        // 4.1 pending的处理
+        if(this.status == PR.PENDING) {
+          let obj = {
+            onFulfilled: value => {
+              try {
+                let result = onFulfilled(value)
+                // 6. 返回类型，实现不同类型不同处理机制
+                this.parse(promise, result, resolve, reject);
+              } catch (e) {
+                onRejected(e)
+              }
+            },
+            onRejected: value => {
+              try {
+                let result = onRejected(value)
+                this.parse(promise, result, resolve, reject);
+              } catch (e) {
+                onRejected(e)
+              }
+            }
+          }
+          this.callbacks.push(obj)
+        }
+        
+        // 成功
+        if (this.status == PR.FULFILLED) {
+          // 3. 使用setTimeout来将onFulfilled与onRejected做为异步宏任务执行
+          setTimeout(() => {
+            try {
+              let result = onFulfilled(this.value)
+              this.parse(promise, result, resolve, reject);
+            } catch (e) {
+              onRejected(e);
+            }
+          });
+        }
+        
+        // 失败
+        if (this.status == PR.REJECTED) {
+          setTimeout(() => {
+            try {
+              let result = onRejected(this.value)
+              this.parse(promise, result, resolve, reject);
+            } catch (e) {
+              onRejected(e);
+            }
+          });
+        }
+      })
+      return promise;
+    }
+    
+    // 代码复用
+    parse(promise, result, resolve, reject) {
+      if (promise == result) {
+        throw new TypeError("Chaining cycle detected for promise");
+      }
+      try {
+        if(result instanceof PR) {
+          result.then(resolve, reject);
+        } else {
+          resolve(result);
+        }
+      } catch (e) {
+        reject(e);
+      }
+    }
+
+
+       // Promise.resolve实现
+    static resolve(value) {
+      return new PR((resolve, reject) => {
+        if (value instanceof PR) {
+          value.then(resolve, reject);
+        } else {
+          resolve(value);
+        }
+      });
+    }
+
+    // Promise.reject实现
+    static reject(reason) {
+      return new PR((_, reject) => {
+        reject(reason);
+      });
+    }
+
+
+    // Promise.race实现
+    static race(promises) {
+      return new PR((resolve, reject) => {
+        promises.map(promise => {
+          promise.then(value => {
+            resolve(value);
+          });
+        });
+      });
+    }
+
+    // Promise.all实现
+    static all(promises) {
+      let resolves = [];
+      return new PR((resolve, reject) => {
+        promises.forEach((promise, index) => {
+          promise.then(
+            value => {
+              resolves.push(value);
+              if (resolves.length == promises.length) {
+                resolve(resolves);
+              }
+            },
+            e => {
+              reject(e);
+            }
+          );
+        });
+      });
+    }
+  }
+
+
+  PR.resolve("resolve").then(value => {
+    console.log(value);
+  });
+
+  let p = new PR((resolve, reject) => {
+    resolve(1)
+  }).then(value => {
+    console.log(value);
+    return new PR((resolve, reject) => {
+      resolve('返回promise')
+    })
+  }).then(value => {
+    console.log(value)
+  })
+
+
+</script>
+</html>
+<style>
+  div {
+    background: red;
+    width: 100px;
+    height: 100px;
+    position: relative;
+  }
+</style>

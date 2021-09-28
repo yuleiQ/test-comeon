@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  
+</body>
+<script>
+  // 工厂模式 批量创建对象 但是批量创建的都是全新的对象，然后返回并赋值，此时创建的对象之间是没有任何关系的，无法判断对象类型
+  function createPerson(name, age, job) {
+    var o = new Object();
+    o.name = name;
+    o.age = age;
+    o.job = job;
+    o.sayName = function() {
+      console.log(this.name);
+    }
+    return o;
+  }
+  var person1 = createPerson('a', 12, 'student')
+  var person2 = createPerson('a', 25, 'worker')
+  console.log(person1,person2);
+
+  // 构造函数模式
+  function createPerson(name, age, job) {
+    this.name = name;
+    this.age = age;
+    this.job = job;
+    this.sayName = function() {
+      console.log(this.name);
+    }
+  }
+  var person1 = new createPerson('a', 12, 'student')
+  var person2 = new createPerson('a', 25, 'worker')
+
+  console.log(person1, person2)
+
+  // 原型模式
+  function Person() {}
+  Person.prototype.name = 'a';
+  Person.prototype.age=15
+  // Person.prototype.job= {
+  //   a: 1,
+  //   b:2
+  // };
+  Person.prototype.job = 'student'
+  Person.prototype.sayName = function() {
+    console.log(this.name)
+  }
+  var person1 = new Person();
+  var person2 = new Person();
+  console.log(person1, person2)
+
+  // 组合使用构造函数模式和原型模式
+  function Person(name, age, job){
+    this.name = name;
+    this.age = age;
+    this.job = job;
+  }
+
+  Person.prototype = {
+      constructor: Person,
+      sayName: function(){
+          alert(this.name);
+      }
+  }
+  var person1 = new createPerson("a",9,"student");
+  var person2 = new createPerson("b",9,"student");
+  console.log(person1,person2); 
+</script>
+</html>

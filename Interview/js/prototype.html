@@ -87,4 +87,97 @@
   // 那么就访问 objCreated.prototype.__proto__继续往上面寻找，直到找到,则停止对原型链对寻找，若最终还是没能找到，则返回 undefined 。
   // 一直沿着原型链寻找下去，直到找到 Object.prototype.__proto__,指向 null，于是返回 undefined了。
 </script>
+
+
+<script>
+  /**
+   * prototype  原型
+   * __proto__  （原型链）原型的链接点
+   * 
+   * 从属关系！！！！！
+   * prototype从属于函数，是函数的一个属性！函数的prototype属性就是个普通对象
+   * proto 对象Object的一个属性,他也是个普通对象
+   * 对象的__proto__保存着构造此对象的那个函数的prototype
+  
+  **/
+  
+  
+  function Person() {
+      this.a = 1
+      this.b = 222;
+  }
+  console.dir(Person.prototype)
+  
+  Person.prototype.b = 2;
+  
+  const person = new Person()
+  console.dir(person.__proto__)
+  
+  console.log(person.__proto__ === Person.prototype)
+  
+  // Person.prototype = {__proto__}
+  console.log(Person.prototype.__proto__ === Object.prototype)
+  console.log(Object.prototype.__proto__); // null
+  
+  console.log(person); // 注意a b位置
+  Object.prototype.c = 3;
+  
+  
+  /**
+   * person {
+   *  b:222
+   *  a: 1
+   *  __proto__: Person.prototype = {
+   *       b: 2
+   *      __proto__: Object.prototype = {
+   *          c:3
+   *          __proto__: null
+   *      }
+   *  }
+   *  
+   * }
+  **/
+  
+  console.log(person.a)
+  console.log(person.b)
+  console.log(person.c)
+  
+  
+  // Function   Object
+  
+  // Person  new Function构造出来的
+  
+  console.log(Person.__proto__ === Function.prototype)
+  console.log(Function.__proto__)
+  console.log(Function.prototype)
+  console.log(Function.__proto__ === Function.prototype) // !!
+  
+  // const obj = {}
+  // object = new Function()
+  console.log(typeof Object)
+  console.log(Object.__proto__ === Function.prototype); // !!
+  
+  console.log(Object.__proto__ === Function.__proto__)
+  
+  
+  console.log('------判断属性是否存在------------------')
+  // person => {a: 1, b:222}
+  console.log(person.hasOwnProperty('a'))
+  console.log(person.hasOwnProperty('b'))
+  console.log(person.hasOwnProperty('c'))
+  
+  console.log('------判断链上属性是否存在------------------')
+  console.log('a' in person)
+  console.log('b' in person)
+  console.log('c' in person)
+  
+  // person.constructor ->实例化person对象的构造函数
+  console.log(person.constructor === Person)
+  function Person1() {
+      this.a = 111
+  }
+  
+  person.constructor = Person1;
+  console.log(person)
+  </script>
 </html>

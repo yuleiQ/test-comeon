@@ -19,12 +19,12 @@ app.get('/',(req,res) => {
 })
 
 // Expires
-// app.get('/demo.js',(req, res)=>{
-//     let jsPath = path.resolve(__dirname,'./static/js/demo.js');
-//     let cont = fs.readFileSync(jsPath);
-//     res.setHeader('Expires', getGLNZ()) //2分钟
-//     res.end(cont)
-// })
+app.get('/demo.js',(req, res)=>{
+    let jsPath = path.resolve(__dirname,'./static/js/demo.js');
+    let cont = fs.readFileSync(jsPath);
+    res.setHeader('Expires', getGLNZ()) //2分钟
+    res.end(cont)
+})
 
 // Cache-Control
 // app.get('/demo.js',(req, res)=>{
@@ -40,7 +40,8 @@ app.get('/',(req,res) => {
 //     let cont = fs.readFileSync(jsPath);
 //     let status = fs.statSync(jsPath)
 
-//     let lastModified = status.mtime.toUTCString()
+//     let lastModified = status.mtime.toUTCString();
+//     console.log(lastModified, 'ssss')
 //     if(lastModified === req.headers['if-modified-since']){
 //         res.writeHead(304, 'Not Modified')
 //         res.end()
@@ -53,22 +54,22 @@ app.get('/',(req,res) => {
 // })
 
 // ETag
-const md5 = require('md5');
+// const md5 = require('md5');
 
-app.get('/demo.js',(req, res)=>{
-    let jsPath = path.resolve(__dirname,'./static/js/demo.js');
-    let cont = fs.readFileSync(jsPath);
-    let etag = md5(cont);
+// app.get('/demo.js',(req, res)=>{
+//     let jsPath = path.resolve(__dirname,'./static/js/demo.js');
+//     let cont = fs.readFileSync(jsPath);
+//     let etag = md5(cont);
 
-    if(req.headers['if-none-match'] === etag){
-        res.writeHead(304, 'Not Modified');
-        res.end();
-    } else {
-        res.setHeader('ETag', etag);
-        res.writeHead(200, 'OK');
-        res.end(cont);
-    }
-})
+//     if(req.headers['if-none-match'] === etag){
+//         res.writeHead(304, 'Not Modified');
+//         res.end();
+//     } else {
+//         res.setHeader('ETag', etag);
+//         res.writeHead(200, 'OK');
+//         res.end(cont);
+//     }
+// })
 
 
 function getGLNZ(){

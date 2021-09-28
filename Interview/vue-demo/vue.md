@@ -18,15 +18,15 @@ function initData (vm: Component) {
     ....
 }
 ```
-
 Vue组件可能存在多个实例，如果使用对象形式定义data，则会导致它们公用一个对象，那么状态变更将会影响所有实例，这是不合理的；采用函数形式定义，在initData时会将其作为工厂函数返回全新data对象，有效规避多实例之间状态污染问题。而在Vue根实例创建过程中则不存在该限制，也是因为根实例只能有一个，不需要担心这种情况。
 
+### 组件创建的顺序是自上而下的 先有parent再有children。挂载的顺序是自下而上的
 ### vue循环中的key的作用以及原理
 src\core\vdom\patch.js - updateChildren()
 
 作用主要是为了高效的更新虚拟dom，其原理是vue在patch过程中通过key可以精确判断两个节点是否是同一个，从而避免频繁更新不同的元素，使得整个patch过程减少dom操作量，提高性能
 
-在patch的过程中，会执行patchVnode,patchVnode过程中回执行updateChildren方法，他会更新所有的两个新旧的子元素，那么在这个过程中，通过key就可以精准的判断，当前在循环的这两个节点不是一个节点
+在patch的过程中，会执行patchVnode,patchVnode过程中会执行updateChildren方法，他会更新所有的两个新旧的子元素，那么在这个过程中，通过key就可以精准的判断，当前在循环的这两个节点不是一个节点
 
 如果不加key，永远会认为是相同的节点，所以会强制更新，这样的话就没法避免频繁更新的过程，需要额外做dom操作
 
@@ -53,6 +53,7 @@ proxy优势：
 
 
 ### vue数据响应式原理以及实现
+vue2通过Object.defineProperty()通过劫持对象get的属性进行依赖收集，通过劫持对象的set属性进行派发更新
 
 ### vuex实现原理，如何使用
 
