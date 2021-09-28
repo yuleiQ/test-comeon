@@ -5,7 +5,8 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "commit": "git cz"
   },
   "dependencies": {
     "core-js": "^3.6.5",
@@ -14,15 +15,20 @@
     "vuex": "^3.4.0"
   },
   "devDependencies": {
+    "@commitlint/cli": "^13.2.0",
     "@vue/cli-plugin-babel": "^4.4.0",
     "@vue/cli-plugin-eslint": "^4.4.0",
     "@vue/cli-plugin-router": "^4.4.1",
     "@vue/cli-plugin-vuex": "^4.4.1",
     "@vue/cli-service": "^4.4.0",
     "babel-eslint": "^10.1.0",
+    "commitizen": "^4.2.4",
+    "commitlint-config-cz": "^0.13.2",
+    "cz-customizable": "^6.3.0",
     "eslint": "^6.7.2",
     "eslint-plugin-vue": "^6.2.2",
-    "vue-template-compiler": "^2.6.11"
+    "vue-template-compiler": "^2.6.11",
+    "yorkie": "^2.0.0"
   },
   "eslintConfig": {
     "root": true,
@@ -42,5 +48,13 @@
     "> 1%",
     "last 2 versions",
     "not dead"
-  ]
+  ],
+  "config": {
+    "commitizen": {
+      "path": "cz-customizable"
+    }
+  },
+  "gitHooks": {
+    "commit-msg": "commitlint -e -V"
+  }
 }
