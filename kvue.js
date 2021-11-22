@@ -89,6 +89,7 @@ class Observer {
 // const watchers = []
 class Watcher{
   constructor(vm, key, updateFn) {
+    // kvue实例
     this.vm = vm;
     // 依赖key
     this.key = key;
@@ -104,7 +105,7 @@ class Watcher{
     // 收集完就置空
     Dep.target = null;
   }
-
+  // 更新
   update() {
     this.updateFn.call(this.vm, this.vm[this.key])
   }

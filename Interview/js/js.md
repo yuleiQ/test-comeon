@@ -562,6 +562,10 @@ entries方法：遍历元素的键值对
 forEach方法：用的贼多，回调函数遍历每个元素
 ```
 
+7. Map
+
+8. Reflect 
+
 
 ### 异步编程串行的解决方案
 4种---nodejs async/serial文件
@@ -991,3 +995,96 @@ css和js优化
 1. 获取元素宽高尺寸和位置信息会触发回流，如offsetTop、offsetLeft等，用变量存一下
 2. 减少循环次数
 3. 合理return
+
+
+
+## 项目脚手架的搭建
+
+1. bin/www文件下指定`#!/usr/bin/env node`,指定脚本的运行环境
+2. 使用commander作为命令行的解决方案，可以借助此工具注册指令
+    2.1 用户通过命令行检查创建的项目名称
+    2.2 检查目录是否已经存在，如果存在则覆盖，如果没有则新建
+    2.3 拉取template
+    2.4 拷贝template文件到目标文件夹，即用户输入的目录
+    2.5 更新package.json
+    2.6 初始化git仓库
+    2.7 安装项目依赖
+3. 使用inquirer进行命令行交互
+4. 使用download-git-repo拉取template文件，可以使用ora实现终端Spinner等待动画
+
+
+##  性能优化
+代码方面
+1. 将offsetTop、offsetLeft等方法用变量存储
+2. 减少循环次数 如filter+map 可以使用reduce替换
+```
+const rangeArr = res.map(ele => ele.name).filter(ele => typeof ele === 'number');
+
+const rangeArr = res.reduce((total, { name }) => {
+    if(typeof name === 'number') {
+        total.push(name)
+    }
+    return total;
+}, [])
+
+```
+
+reduce的其他妙用-解决异步操作
+```
+const rangeArr = res.reduce(async (total, {name}) => {
+    const lastVal = await total; // total是个promise
+    if(typeof name === 'number') {
+        const data = await getData(name);
+        lastVal.push(data);
+    }
+    return lastVal;
+}, Promise.resolve([]));
+```
+
+3. (computed使用局部变量优化)[https://juejin.cn/post/6922641008106668045#heading-2]
+```
+data: {
+    start: 0,
+},
+computed: {
+    base () {
+      return 42
+    },
+    result () {
+      let result = this.start;
+      for (let i = 0; i < 1000; i++) {
+        result += Math.sqrt(Math.cos(Math.sin(this.base))) + this.base * this.base + this.base ;
+      }
+      return result;
+    },
+}
+
+```
+
+因为result在调用的时候同时会调用this.base，他会频繁的调用，所以会比较消耗性能，优化方案是每次调用this.base的时候，将this.base定义成一个局部变量，缓存this.base,后面直接访问
+
+```
+data: {
+    start: 0,
+},
+computed: {
+    base () {
+      return 42
+    },
+    result ({ base, start }) {
+      let result = start;
+      for (let i = 0; i < 1000; i++) {
+        result += Math.sqrt(Math.cos(Math.sin(base))) + base * base + base ;
+      }
+      return result;
+    },
+}
+
+```
+4. vue样式使用了scoped， 但是@import 'xxx.css'，此时的作用域是全局的
+```
+修改：
+<style src="./xxx.css" scoped></style>
+```
+5. 懒加载
+6. 开启gzip

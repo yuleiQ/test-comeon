@@ -73,7 +73,6 @@ class Compiler{
     // node.innerHTML =  this.$vm[exp]
     this.update(node, exp,'html')
   }
-
   htmlUpdater(node, value) {
     node.innerHTML = value;
   }

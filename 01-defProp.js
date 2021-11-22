@@ -13,7 +13,6 @@ function defineReactive(obj, key, val) {
           observer(newVal)
         }
         val = newVal
-        
       }
     }
   }) 
